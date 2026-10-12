@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Modificar contenido HTML</title>
+  <link rel="stylesheet" href="css/estilos.css">
+</head>
+<body>
+  <header>
+    <h1>Curso de JavaScript: interacciones con HTML</h1>
+  </header>
+
+  <nav id="menu"></nav>
+
+  <main>
+    <h2>Modificar contenido HTML</h2>
+    <p>Con la propiedad <code>innerHTML</code> podemos cambiar el contenido
+       de cualquier elemento de la página.</p>
+
+    <div class="ejemplo">
+      <h3>¿Qué puede hacer JavaScript?</h3>
+      <p id="demo">JavaScript puede cambiar el contenido HTML.</p>
+      <button type="button" onclick="cambiarTexto()">¡Haz clic!</button>
+    </div>
+  </main>
+
+  <footer>
+    <p>&copy; 2026 Curso JavaScript - Formación para empresas</p>
+  </footer>
+
+  <script src="js/menu.js"></script>
+  <script>
+    function cambiarTexto() {
+      document.getElementById("demo").innerHTML = "¡Hola JavaScript!";
+    }
+  </script>
+</body>
+</html>
