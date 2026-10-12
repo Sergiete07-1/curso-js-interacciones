@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Modificar estilos CSS</title>
+  <link rel="stylesheet" href="css/estilos.css">
+</head>
+<body>
+  <header>
+    <h1>Curso de JavaScript: interacciones con HTML</h1>
+  </header>
+
+  <nav id="menu"></nav>
+
+  <main>
+    <h2>Modificar estilos CSS</h2>
+    <p>JavaScript puede cambiar el estilo de un elemento mediante su
+       propiedad <code>style</code>.</p>
+
+    <div class="ejemplo">
+      <h3>¿Qué puede hacer JavaScript?</h3>
+      <!-- Párrafo con id "demo": es el elemento cuyo estilo vamos a cambiar -->
+      <p id="demo">JavaScript puede cambiar el estilo de un elemento HTML.</p>
+      <!-- Al hacer clic se ejecuta la función cambiarEstilo() -->
+      <button type="button" onclick="cambiarEstilo()">¡Haz clic!</button>
+    </div>
+  </main>
+
+  <footer>
+    <p>&copy; 2026 Curso JavaScript - Formación para empresas</p>
+  </footer>
+
+  <script src="js/menu.js"></script>
+  <script>
+    // Función que se ejecuta al pulsar el botón
+    function cambiarEstilo() {
+      // getElementById busca el elemento cuyo atributo id es "demo"
+      // .style da acceso a sus estilos CSS en línea
+      // fontSize equivale a la propiedad CSS font-size (en JavaScript
+      // las propiedades con guion se escriben en camelCase)
+      document.getElementById("demo").style.fontSize = "35px";
+    }
+  </script>
+</body>
+</html>
