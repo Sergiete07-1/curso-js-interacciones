@@ -1,5 +1,6 @@
 const secciones = [
   { texto: "Home", url: "index.html" },
+  { texto: "Modificar contenido HTML", url: "contenido.html" },
 ];
 
 const menu = document.getElementById("menu");
