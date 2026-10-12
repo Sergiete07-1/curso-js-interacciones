@@ -1,0 +1,456 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Memoria - Práctica 1: Sistemas de control de versiones</title>
+  <style>
+    * { box-sizing: border-box; }
+    body {
+      font-family: Arial, sans-serif;
+      line-height: 1.6;
+      color: #222;
+      max-width: 1000px;
+      margin: 0 auto;
+      padding: 0 20px 40px;
+    }
+    header {
+      border-bottom: 3px solid #222;
+      padding: 30px 0 15px;
+      margin-bottom: 20px;
+    }
+    header h1 { margin: 0 0 5px; }
+    header p { margin: 0; color: #555; }
+    nav {
+      background: #f4f4f4;
+      border: 1px solid #ddd;
+      border-radius: 6px;
+      padding: 10px 20px;
+      margin-bottom: 30px;
+    }
+    nav ol { margin: 5px 0; }
+    nav a { color: #0366d6; text-decoration: none; }
+    h2 { border-bottom: 1px solid #ccc; padding-bottom: 5px; margin-top: 50px; }
+    h3 { margin-top: 35px; }
+    code {
+      background: #f0f0f0;
+      padding: 1px 5px;
+      border-radius: 3px;
+      font-size: 0.9em;
+    }
+    pre {
+      background: #1e1e1e;
+      color: #eee;
+      padding: 12px 15px;
+      border-radius: 6px;
+      overflow-x: auto;
+    }
+    pre code { background: none; padding: 0; color: inherit; }
+    table { border-collapse: collapse; width: 100%; margin: 15px 0; font-size: 0.95em; }
+    th, td { border: 1px solid #ccc; padding: 8px 10px; text-align: left; vertical-align: top; }
+    th { background: #f4f4f4; }
+    figure { margin: 20px 0 30px; }
+    figure img {
+      max-width: 100%;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+    }
+    figcaption { font-size: 0.9em; color: #555; margin-top: 5px; }
+    .nota {
+      background: #fff8e1;
+      border-left: 4px solid #f0ad4e;
+      padding: 10px 15px;
+      margin: 15px 0;
+    }
+    footer {
+      margin-top: 60px;
+      border-top: 1px solid #ccc;
+      padding-top: 15px;
+      color: #555;
+      font-size: 0.9em;
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <h1>Práctica 1 – Sistemas de control de versiones</h1>
+    <p>Memoria del desarrollo del proyecto <strong>curso-js-interacciones</strong> siguiendo la metodología Git Flow</p>
+  </header>
+
+  <nav>
+    <strong>Índice</strong>
+    <ol>
+      <li><a href="#introduccion">Introducción teórica</a></li>
+      <li><a href="#equipo">Equipo y reparto del trabajo</a></li>
+      <li><a href="#commits">Convención de mensajes de commit</a></li>
+      <li><a href="#proceso">Proceso realizado</a></li>
+      <li><a href="#resumen">Resumen de features, release y hotfix</a></li>
+      <li><a href="#enlaces">Enlaces del proyecto</a></li>
+    </ol>
+  </nav>
+
+  <!-- ===================================================== -->
+  <section id="introduccion">
+    <h2>1. Introducción teórica</h2>
+
+    <h3>1.1 ¿Qué es Git?</h3>
+    <p>
+      Git es un <strong>sistema de control de versiones distribuido</strong>. Permite registrar
+      todos los cambios que se hacen en los archivos de un proyecto a lo largo del tiempo,
+      de forma que se puede saber quién hizo cada cambio, cuándo y por qué, y volver a
+      cualquier versión anterior si es necesario.
+    </p>
+    <p>
+      Es <em>distribuido</em> porque cada desarrollador tiene en su equipo una copia completa
+      del repositorio con todo su historial. Los cambios se comparten con el resto del equipo
+      a través de un repositorio remoto, en nuestro caso alojado en <strong>GitHub</strong>.
+    </p>
+    <p>Conceptos básicos que hemos utilizado:</p>
+    <ul>
+      <li><strong>Repositorio:</strong> carpeta del proyecto cuyo historial gestiona Git.</li>
+      <li><strong>Commit:</strong> instantánea de los cambios guardada en el historial, con un mensaje que la describe.</li>
+      <li><strong>Rama (branch):</strong> línea de desarrollo independiente que permite trabajar sin afectar al resto del código.</li>
+      <li><strong>Merge:</strong> integración de los cambios de una rama en otra.</li>
+      <li><strong>Tag:</strong> etiqueta que marca un commit concreto, normalmente una versión publicada (por ejemplo <code>v1.0</code>).</li>
+      <li><strong>Push / Pull:</strong> enviar cambios al repositorio remoto / traer cambios desde él.</li>
+    </ul>
+
+    <h3>1.2 ¿Qué es Git Flow?</h3>
+    <p>
+      Git Flow es una <strong>metodología de trabajo con ramas</strong> que define qué ramas
+      existen en un proyecto, para qué sirve cada una y cómo se integran entre sí.
+      Se organiza en dos ramas principales permanentes y tres tipos de ramas de apoyo temporales:
+    </p>
+    <table>
+      <tr><th>Rama</th><th>Tipo</th><th>Sale de</th><th>Se integra en</th><th>Función</th></tr>
+      <tr><td><code>main</code></td><td>Principal</td><td>—</td><td>—</td><td>Contiene solo código estable, listo para producción. Cada versión publicada se marca con un tag.</td></tr>
+      <tr><td><code>develop</code></td><td>Principal</td><td><code>main</code></td><td>—</td><td>Rama de integración donde se van juntando las nuevas funcionalidades terminadas.</td></tr>
+      <tr><td><code>feature/*</code></td><td>Apoyo</td><td><code>develop</code></td><td><code>develop</code></td><td>Desarrollo de una nueva funcionalidad de forma aislada.</td></tr>
+      <tr><td><code>release/*</code></td><td>Apoyo</td><td><code>develop</code></td><td><code>main</code> y <code>develop</code></td><td>Preparación de una nueva versión: últimos ajustes antes de publicarla y etiquetarla.</td></tr>
+      <tr><td><code>hotfix/*</code></td><td>Apoyo</td><td><code>main</code></td><td><code>main</code> y <code>develop</code></td><td>Corrección o mejora urgente sobre la versión ya publicada, sin esperar a la siguiente release.</td></tr>
+    </table>
+    <p>
+      Para aplicar la metodología hemos usado la extensión <strong>git-flow</strong>, que
+      automatiza la creación y el cierre de estas ramas con comandos como
+      <code>git flow feature start</code> o <code>git flow release finish</code>.
+    </p>
+
+    <h3>1.3 ¿Por qué utilizamos Git Flow?</h3>
+    <ul>
+      <li><strong>Trabajo en paralelo:</strong> cada programador desarrolla su sección en su propia rama <code>feature</code> sin interferir en el trabajo de los demás.</li>
+      <li><strong>Código estable siempre disponible:</strong> <code>main</code> solo recibe código revisado a través de releases y hotfixes, así que el cliente siempre tiene una versión que funciona.</li>
+      <li><strong>Versiones identificadas:</strong> cada versión publicada queda etiquetada (<code>v1.0</code>), por lo que es fácil saber qué contiene y volver a ella.</li>
+      <li><strong>Correcciones rápidas:</strong> las ramas <code>hotfix</code> permiten mejorar la versión publicada sin arrastrar trabajo a medias de <code>develop</code>.</li>
+      <li><strong>Trazabilidad:</strong> el historial muestra con claridad qué se hizo, en qué rama y quién lo hizo, lo que demuestra al cliente que trabajamos siguiendo una metodología.</li>
+    </ul>
+  </section>
+
+  <!-- ===================================================== -->
+  <section id="equipo">
+    <h2>2. Equipo y reparto del trabajo</h2>
+    <p>
+      El equipo está formado por 3 programadores. Para simularlos se ha configurado el nombre
+      de cada uno con <code>git config user.name</code> antes de su trabajo, y además se indica
+      su nombre en cada mensaje de commit.
+    </p>
+    <table>
+      <tr><th>Usuario</th><th>Tareas</th></tr>
+      <tr><td><strong>Usuario 1</strong></td><td>Crear el repositorio, inicializar Git Flow, implementar la estructura inicial (cabecera, barra de navegación con Home y pie de página) y realizar el hotfix <code>hotfix/mejorasV_1_0</code>.</td></tr>
+      <tr><td><strong>Usuario 2</strong></td><td>Crear las features <code>feature/contenidoHTML</code> y <code>feature/atributosHTML</code>.</td></tr>
+      <tr><td><strong>Usuario 3</strong></td><td>Crear la feature <code>feature/estilosCSS</code> y la release <code>v1.0</code>.</td></tr>
+    </table>
+  </section>
+
+  <!-- ===================================================== -->
+  <section id="commits">
+    <h2>3. Convención de mensajes de commit</h2>
+    <p>Todos los commits siguen el formato <em>Conventional Commits</em>:</p>
+    <pre><code>tipo(ámbito): descripción en imperativo [Usuario X]</code></pre>
+    <table>
+      <tr><th>Tipo</th><th>Uso</th></tr>
+      <tr><td><code>feat</code></td><td>Nueva funcionalidad.</td></tr>
+      <tr><td><code>style</code></td><td>Cambios de estilos o aspecto visual.</td></tr>
+      <tr><td><code>fix</code></td><td>Corrección o mejora de algo existente.</td></tr>
+      <tr><td><code>chore</code></td><td>Tareas de mantenimiento, como preparar una versión.</td></tr>
+      <tr><td><code>docs</code></td><td>Documentación.</td></tr>
+    </table>
+    <p>
+      La descripción es breve, está en imperativo ("añadir", "crear") y termina con el nombre
+      del usuario entre corchetes para identificar quién realizó el cambio.
+    </p>
+  </section>
+
+  <!-- ===================================================== -->
+  <section id="proceso">
+    <h2>4. Proceso realizado</h2>
+
+    <!-- FASE 1 -->
+    <h3>4.1 Usuario 1 – Creación del repositorio y estructura inicial</h3>
+    <p>
+      El Usuario 1 crea el repositorio <code>curso-js-interacciones</code> en GitHub, lo clona
+      en su equipo, configura su nombre e inicializa Git Flow. Al ejecutar
+      <code>git flow init</code> se crean las ramas iniciales: <code>main</code> como rama de
+      producción y <code>develop</code> como rama de desarrollo.
+    </p>
+<pre><code>git clone https://github.com/Sergiete07-1/curso-js-interacciones.git
+cd curso-js-interacciones
+git config user.name "Usuario 1"
+git flow init</code></pre>
+    <figure>
+      <img src="capturas/figura01.png" alt="Figura 1">
+      <figcaption><strong>Figura 1.</strong> Usuario 1 clona el repositorio, configura su nombre e inicializa Git Flow: se crean main y develop y queda situado en develop.</figcaption>
+    </figure>
+
+    <p>
+      A continuación implementa la estructura inicial de la web: cabecera con el nombre del
+      curso e imagen de fondo, barra de navegación con acceso a Home, una breve descripción
+      del curso en la parte central y el pie de página. El menú se genera desde
+      <code>js/menu.js</code> para que cada sección nueva solo tenga que añadir su enlace.
+    </p>
+    <figure>
+      <img src="capturas/figura02.png" alt="Figura 2">
+      <figcaption><strong>Figura 2.</strong> Estructura inicial creada por el Usuario 1: cabecera con imagen de fondo, menú con Home, descripción del curso y pie de página.</figcaption>
+    </figure>
+    <figure>
+      <img src="capturas/figura03.png" alt="Figura 3">
+      <figcaption><strong>Figura 3.</strong> git status en develop: los archivos de la estructura inicial aparecen como nuevos, todavía sin seguimiento.</figcaption>
+    </figure>
+
+    <p>El trabajo se guarda en dos commits y se suben ambas ramas a GitHub:</p>
+<pre><code>git add index.html js
+git commit -m "feat(home): crear estructura con cabecera, menú y footer [Usuario 1]"
+git add css img
+git commit -m "style(home): añadir estilos e imagen de cabecera [Usuario 1]"
+git push -u origin main develop</code></pre>
+    <figure>
+      <img src="capturas/figura04.png" alt="Figura 4">
+      <figcaption><strong>Figura 4.</strong> El Usuario 1 guarda su trabajo en dos commits con el formato tipo(ámbito): descripción [Usuario 1].</figcaption>
+    </figure>
+    <figure>
+      <img src="capturas/figura05.png" alt="Figura 5">
+      <figcaption><strong>Figura 5.</strong> Push de main y develop a GitHub e historial: develop va dos commits por delante de main.</figcaption>
+    </figure>
+    <figure>
+      <img src="capturas/figura06.png" alt="Figura 6">
+      <figcaption><strong>Figura 6.</strong> Ramas main y develop publicadas en GitHub.</figcaption>
+    </figure>
+
+    <!-- FASE 2 -->
+    <h3>4.2 Usuario 2 – feature/contenidoHTML</h3>
+    <p>
+      El Usuario 2 crea la feature desde <code>develop</code> para implementar la sección
+      "Modificar contenido HTML", con un ejemplo similar al de W3Schools: al pulsar un botón,
+      JavaScript cambia el texto de un párrafo mediante la propiedad <code>innerHTML</code>.
+    </p>
+<pre><code>git config user.name "Usuario 2"
+git flow feature start contenidoHTML</code></pre>
+    <figure>
+      <img src="capturas/figura07.png" alt="Figura 7">
+      <figcaption><strong>Figura 7.</strong> El Usuario 2 crea feature/contenidoHTML a partir de develop con git flow feature start.</figcaption>
+    </figure>
+    <figure>
+      <img src="capturas/figura08.png" alt="Figura 8">
+      <figcaption><strong>Figura 8.</strong> Sección «Modificar contenido HTML»: al pulsar el botón, innerHTML cambia el texto por «¡Hola JavaScript!».</figcaption>
+    </figure>
+<pre><code>git add .
+git commit -m "feat(contenido): añadir sección Modificar contenido HTML [Usuario 2]"
+git push -u origin feature/contenidoHTML
+git flow feature finish -k contenidoHTML
+git push origin develop</code></pre>
+    <figure>
+      <img src="capturas/figura09.png" alt="Figura 9">
+      <figcaption><strong>Figura 9.</strong> Commit [Usuario 2], subida de la rama y cierre con feature finish -k: se integra en develop y la rama se conserva.</figcaption>
+    </figure>
+
+    <h3>4.3 Usuario 2 – feature/atributosHTML</h3>
+    <p>
+      Con el mismo procedimiento, el Usuario 2 crea una segunda feature para la sección
+      "Modificar atributos HTML". El ejemplo enciende y apaga una bombilla cambiando el
+      atributo <code>src</code> de una imagen.
+    </p>
+<pre><code>git flow feature start atributosHTML
+git add .
+git commit -m "feat(atributos): añadir sección Modificar atributos HTML [Usuario 2]"
+git push -u origin feature/atributosHTML
+git flow feature finish -k atributosHTML
+git push origin develop</code></pre>
+    <figure>
+      <img src="capturas/figura10.png" alt="Figura 10">
+      <figcaption><strong>Figura 10.</strong> Sección «Modificar atributos HTML»: el botón cambia el atributo src de la imagen y enciende la bombilla.</figcaption>
+    </figure>
+    <figure>
+      <img src="capturas/figura11.png" alt="Figura 11">
+      <figcaption><strong>Figura 11.</strong> Commit, subida y cierre de feature/atributosHTML [Usuario 2], que queda integrada en develop.</figcaption>
+    </figure>
+
+    <!-- FASE 3 -->
+    <h3>4.4 Usuario 3 – feature/estilosCSS</h3>
+    <p>
+      El Usuario 3 crea su feature para la sección "Modificar estilos CSS", con un ejemplo
+      similar al de W3Schools en el que JavaScript cambia el tamaño de la letra de un párrafo
+      a través de la propiedad <code>style</code>. El código está comentado explicando cada paso.
+    </p>
+<pre><code>git config user.name "Usuario 3"
+git flow feature start estilosCSS
+git add .
+git commit -m "feat(estilos): añadir sección Modificar estilos CSS [Usuario 3]"
+git push -u origin feature/estilosCSS
+git flow feature finish -k estilosCSS
+git push origin develop</code></pre>
+    <figure>
+      <img src="capturas/figura12.png" alt="Figura 12">
+      <figcaption><strong>Figura 12.</strong> Sección «Modificar estilos CSS», con el código comentado: el botón cambia style.fontSize. El menú ya muestra las 4 secciones.</figcaption>
+    </figure>
+    <figure>
+      <img src="capturas/figura13.png" alt="Figura 13">
+      <figcaption><strong>Figura 13.</strong> El Usuario 3 hace commit, sube y cierra feature/estilosCSS, que se integra en develop.</figcaption>
+    </figure>
+
+    <h3>4.5 Usuario 3 – release/v1.0</h3>
+    <p>
+      Con las tres features integradas en <code>develop</code>, el Usuario 3 crea la release
+      <code>v1.0</code>. En ella marca la versión en el pie de la página Home. Al cerrarla,
+      Git Flow la integra en <code>main</code>, crea el tag <code>v1.0</code> y lleva ese
+      tag de vuelta a <code>develop</code>.
+    </p>
+<pre><code>git flow release start v1.0
+git add .
+git commit -m "chore(release): preparar versión 1.0 [Usuario 3]"
+git push -u origin release/v1.0
+git flow release finish -k -m "Versión 1.0 [Usuario 3]" v1.0
+git push origin main develop --tags</code></pre>
+    <figure>
+      <img src="capturas/figura14.png" alt="Figura 14">
+      <figcaption><strong>Figura 14.</strong> El Usuario 3 cierra la release v1.0: se integra en main, se crea el tag v1.0 y vuelve a develop. Después se sube todo con --tags.</figcaption>
+    </figure>
+    <figure>
+      <img src="capturas/figura15.png" alt="Figura 15">
+      <figcaption><strong>Figura 15.</strong> Tag v1.0 publicado en GitHub.</figcaption>
+    </figure>
+
+    <!-- FASE 4 -->
+    <h3>4.6 Usuario 1 – hotfix/mejorasV_1_0</h3>
+    <p>
+      El Usuario 1, encargado de las pruebas, decide mejorar la sección de contenido creada
+      por el Usuario 2 añadiendo un botón "Restaurar" que devuelve el texto a su valor original.
+      Como la mejora se aplica sobre la versión ya publicada, se usa un <strong>hotfix</strong>,
+      que parte de <code>main</code> y al cerrarse se integra tanto en <code>main</code> como
+      en <code>develop</code>.
+    </p>
+<pre><code>git config user.name "Usuario 1"
+git flow hotfix start mejorasV_1_0
+git add .
+git commit -m "fix(contenido): añadir botón para restaurar el texto [Usuario 1]"
+git push -u origin hotfix/mejorasV_1_0
+git flow hotfix finish -k -n mejorasV_1_0
+git push origin main develop</code></pre>
+    <figure>
+      <img src="capturas/figura16.png" alt="Figura 16">
+      <figcaption><strong>Figura 16.</strong> El Usuario 1 crea hotfix/mejorasV_1_0 desde main para mejorar la sección de contenido del Usuario 2.</figcaption>
+    </figure>
+    <figure>
+      <img src="capturas/figura17.png" alt="Figura 17">
+      <figcaption><strong>Figura 17.</strong> Mejora del hotfix: nuevo botón «Restaurar» que devuelve el texto a su valor original.</figcaption>
+    </figure>
+    <figure>
+      <img src="capturas/figura18.png" alt="Figura 18">
+      <figcaption><strong>Figura 18.</strong> Commit [Usuario 1] y cierre del hotfix: se integra en main y en develop, y se suben ambas ramas a GitHub.</figcaption>
+    </figure>
+
+    <h3>4.7 Resultado final del historial</h3>
+    <figure>
+      <img src="capturas/figura19.png" alt="Figura 19">
+      <figcaption><strong>Figura 19.</strong> Historial final (git log --graph): features en develop, release con tag v1.0 y hotfix integrado en main y develop.</figcaption>
+    </figure>
+    <figure>
+      <img src="capturas/figura20.png" alt="Figura 20">
+      <figcaption><strong>Figura 20.</strong> Network graph de GitHub con todas las ramas del flujo Git Flow: main, develop, features, release y hotfix.</figcaption>
+    </figure>
+    <div class="nota">
+      Las tres features aparecen en línea sobre <code>develop</code> porque cada una tenía un
+      único commit y Git Flow las integró mediante <em>fast-forward</em>. Las etiquetas
+      <code>feature/...</code> junto a cada commit demuestran que cada una se desarrolló en su
+      propia rama, que se ha conservado en el repositorio.
+    </div>
+
+    <!-- FASE 5 -->
+    <h3>4.8 Colaborador y proyecto en GitHub</h3>
+    <p>
+      Se ha dado acceso como colaborador al usuario <strong>IvanPallares</strong> en el
+      repositorio y se ha creado el proyecto de GitHub <strong>Curso JS interacciones</strong>,
+      vinculado al repositorio, en el que también tiene acceso.
+    </p>
+    <figure>
+      <img src="capturas/figura21.png" alt="Figura 21">
+      <figcaption><strong>Figura 21.</strong> IvanPallares invitado como colaborador del repositorio (invitación pendiente de aceptar).</figcaption>
+    </figure>
+    <figure>
+      <img src="capturas/figura22.png" alt="Figura 22">
+      <figcaption><strong>Figura 22.</strong> Proyecto de GitHub «Curso JS interacciones» vinculado al repositorio, con IvanPallares como colaborador con rol Write.</figcaption>
+    </figure>
+
+    <h3>4.9 Documentación en GitHub Pages</h3>
+    <p>
+      Esta memoria se encuentra en la rama <code>gh-pages</code>, creada como rama huérfana
+      (sin el historial del código) y publicada con GitHub Pages.
+    </p>
+<pre><code>git switch --orphan gh-pages
+git add .
+git commit -m "docs: añadir memoria del proyecto [Usuario 1]"
+git push -u origin gh-pages</code></pre>
+  </section>
+
+  <!-- ===================================================== -->
+  <section id="resumen">
+    <h2>5. Resumen de features, release y hotfix</h2>
+    <table>
+      <tr>
+        <th>Rama</th><th>Usuario</th><th>Sale de</th><th>Se integra en</th><th>Commit</th><th>Cambios</th>
+      </tr>
+      <tr>
+        <td><code>feature/contenidoHTML</code></td><td>Usuario 2</td><td><code>develop</code></td><td><code>develop</code></td>
+        <td><code>18f836d</code><br>feat(contenido): añadir sección Modificar contenido HTML</td>
+        <td>Nuevo <code>contenido.html</code> con ejemplo de <code>innerHTML</code> y enlace en el menú.</td>
+      </tr>
+      <tr>
+        <td><code>feature/atributosHTML</code></td><td>Usuario 2</td><td><code>develop</code></td><td><code>develop</code></td>
+        <td><code>f59c1bd</code><br>feat(atributos): añadir sección Modificar atributos HTML</td>
+        <td>Nuevo <code>atributos.html</code> con ejemplo de cambio del atributo <code>src</code> y enlace en el menú.</td>
+      </tr>
+      <tr>
+        <td><code>feature/estilosCSS</code></td><td>Usuario 3</td><td><code>develop</code></td><td><code>develop</code></td>
+        <td><code>2965501</code><br>feat(estilos): añadir sección Modificar estilos CSS</td>
+        <td>Nuevo <code>estilos.html</code> con ejemplo comentado de <code>style.fontSize</code> y enlace en el menú.</td>
+      </tr>
+      <tr>
+        <td><code>release/v1.0</code></td><td>Usuario 3</td><td><code>develop</code></td><td><code>main</code> y <code>develop</code></td>
+        <td><code>4e2ffc6</code><br>chore(release): preparar versión 1.0<br>Merge en main: <code>1f91f38</code> (tag <code>v1.0</code>)</td>
+        <td>Indicación de la versión 1.0 en el pie de la página Home.</td>
+      </tr>
+      <tr>
+        <td><code>hotfix/mejorasV_1_0</code></td><td>Usuario 1</td><td><code>main</code></td><td><code>main</code> y <code>develop</code></td>
+        <td><code>ca19bf2</code><br>fix(contenido): añadir botón para restaurar el texto<br>Merge en main: <code>f515c43</code></td>
+        <td>Botón "Restaurar" en <code>contenido.html</code>.</td>
+      </tr>
+    </table>
+  </section>
+
+  <!-- ===================================================== -->
+  <section id="enlaces">
+    <h2>6. Enlaces del proyecto</h2>
+    <ul>
+      <li>Repositorio: <a href="https://github.com/Sergiete07-1/curso-js-interacciones">github.com/Sergiete07-1/curso-js-interacciones</a></li>
+      <li>Ramas: <a href="https://github.com/Sergiete07-1/curso-js-interacciones/branches">ver ramas</a></li>
+      <li>Tag v1.0: <a href="https://github.com/Sergiete07-1/curso-js-interacciones/tags">ver tags</a></li>
+      <li>Network graph: <a href="https://github.com/Sergiete07-1/curso-js-interacciones/network">ver gráfico</a></li>
+      <li>Proyecto de GitHub: <a href="https://github.com/users/Sergiete07-1/projects/2">Curso JS interacciones</a></li>
+    </ul>
+  </section>
+
+  <footer>
+    Práctica 1 – Sistemas de control de versiones · Equipo: Usuario 1, Usuario 2 y Usuario 3
+  </footer>
+
+</body>
+</html>
